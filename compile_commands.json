@@ -1,0 +1,29 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-ObjC",
+      "-framework",
+      "Cocoa",
+      "-framework",
+      "Metal",
+      "-framework",
+      "QuartzCore",
+      "-framework",
+      "MetalKit",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Iinclude",
+      "-Iinclude/External",
+      "-DFLECS_NO_CPP",
+      "-c",
+      "-o",
+      "build/Modules/Player.o",
+      "src/Modules/Player.c"
+    ],
+    "directory": "/Users/suleyman/sokoltest",
+    "file": "/Users/suleyman/sokoltest/src/Modules/Player.c",
+    "output": "/Users/suleyman/sokoltest/build/Modules/Player.o"
+  }
+]

@@ -1,0 +1,80 @@
+{
+  "compressionlevel": -1,
+  "height": 20,
+  "infinite": true,
+  "layers": [
+    {
+      "chunks": [
+        {
+          "data": [
+            1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 6, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 8, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0
+          ],
+          "height": 16,
+          "width": 16,
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "height": 48,
+      "id": 1,
+      "name": "Tile Layer 1",
+      "opacity": 1,
+      "startx": -16,
+      "starty": -16,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 32,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "nextlayerid": 2,
+  "nextobjectid": 1,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.11.2",
+  "tileheight": 16,
+  "tilesets": [
+    {
+      "columns": 3,
+      "firstgid": 1,
+      "image": "./assets/Path.png",
+      "imageheight": 96,
+      "imagewidth": 48,
+      "margin": 0,
+      "name": "Path",
+      "spacing": 0,
+      "tilecount": 18,
+      "tileheight": 16,
+      "tilewidth": 16
+    },
+    {
+      "columns": 3,
+      "firstgid": 19,
+      "image": "./assets/Water.png",
+      "imageheight": 96,
+      "imagewidth": 48,
+      "margin": 0,
+      "name": "Water",
+      "spacing": 0,
+      "tilecount": 18,
+      "tileheight": 16,
+      "tilewidth": 16
+    }
+  ],
+  "tilewidth": 16,
+  "type": "map",
+  "version": "1.10",
+  "width": 30
+}

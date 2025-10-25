@@ -1,0 +1,7 @@
+build/
+.cache/
+assets/**/*.tsx
+assets/**/*.tmx
+assets/**/*.tiled-*
+src/External/
+include/External/
