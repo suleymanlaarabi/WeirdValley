@@ -5,3 +5,4 @@ assets/**/*.tmx
 assets/**/*.tiled-*
 src/External/
 include/External/
+.DS_store
