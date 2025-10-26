@@ -6,7 +6,7 @@ ECS_COMPONENT_DECLARE(Position);
 ECS_COMPONENT_DECLARE(Velocity);
 ECS_COMPONENT_DECLARE(Rotation);
 ECS_COMPONENT_DECLARE(Scale);
-ECS_COMPONENT_DECLARE(Size);
+ECS_COMPONENT_DECLARE(RectSize);
 
 void ApplyVelocitySystem(ecs_iter_t *it) {
     Position *positions = ecs_field(it, Position, 0);
@@ -25,10 +25,12 @@ void TransformImport(ecs_world_t *world) {
     ECS_COMPONENT_DEFINE(world, Position);
     ECS_COMPONENT_DEFINE(world, Velocity);
     ECS_COMPONENT_DEFINE(world, Scale);
+    ECS_COMPONENT_DEFINE(world, RectSize);
 
     REGISTER_VECTOR2_COMPONENT(world, Position);
     REGISTER_VECTOR2_COMPONENT(world, Scale);
     REGISTER_VECTOR2_COMPONENT(world, Velocity);
+    REGISTER_VECTOR2_COMPONENT(world, RectSize);
 
     ecs_primitive(world, {
         .entity = ecs_id(Rotation),

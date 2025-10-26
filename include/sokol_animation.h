@@ -1,6 +1,7 @@
 #ifndef SOKOL_ANIMATION_H
     #define SOKOL_ANIMATION_H
     #include <flecs.h>
+    #define animation_set(world, entity, animation, value) ecs_set_pair(world, entity, PlayingAnimation, animation, value);
 
 
 typedef struct {

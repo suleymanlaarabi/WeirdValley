@@ -6,3 +6,4 @@ assets/**/*.tiled-*
 src/External/
 include/External/
 .DS_store
+assets/WeirdValley/.DS_Store

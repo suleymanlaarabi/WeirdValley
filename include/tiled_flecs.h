@@ -1,5 +1,6 @@
 #ifndef TILED_FLECS_H
     #define TILED_FLECS_H
+    #include <Security/cssmconfig.h>
     #include <flecs.h>
     #include "tiled.h"
     #include "transform.h"
@@ -14,15 +15,13 @@ typedef struct {
     int y;
 } EcsTiledLayer;
 
-typedef TiledChunk EcsTiledChunk;
 typedef TiledTileset EcsTiledTileset;
 
 extern ECS_COMPONENT_DECLARE(EcsTiledMap);
 extern ECS_COMPONENT_DECLARE(EcsTiledLayer);
-extern ECS_COMPONENT_DECLARE(EcsTiledChunk);
 extern ECS_COMPONENT_DECLARE(EcsTiledTileset);
 extern ECS_TAG_DECLARE(EcsTile);
-
+extern ECS_TAG_DECLARE(EcsTiledChunk);
 
 void spawn_map(
     ecs_world_t *world,

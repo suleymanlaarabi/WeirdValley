@@ -25,6 +25,17 @@ static void spawn_chunk(
 ) {
     char entity_name[20];
     int tile_counter = 0;
+    float tile_scale = TILE_SIZE * scale;
+    ecs_value_t tile_rect = ecs_value(ImageRect, {
+        .height = TILE_SIZE,
+        .width = TILE_SIZE
+    });
+
+    ecs_value_t tile_image_size = ecs_value(ImageSize, {
+        .height = tile_scale,
+        .width = tile_scale
+    });
+
     for (int row = 0; row < chunk->height; row++) {
         for (int column = 0; column < chunk->width; column++) {
             tile_counter++;
@@ -44,35 +55,28 @@ static void spawn_chunk(
             int source_y = (local_tile_id / selected_tileset.tiles_per_row) * TILE_SIZE;
 
             sprintf(entity_name, "Tile(%d)", tile_counter);
-            ecs_entity_t tile_entity = ecs_entity(world, {
+            ecs_entity(world, {
                 .name = entity_name,
                 .parent = chunk_entity,
-                .add = ecs_ids(EcsTile, NoRender),
+                .add = ecs_ids(NoRender, EcsTile, ecs_pair(EcsIsA, selected_tileset.image)),
                 .set = ecs_values(
                     ecs_value(Position, {
-                        .x = (column + chunk_position.x) * TILE_SIZE * scale,
-                        .y = (row + chunk_position.y) * TILE_SIZE * scale
+                        .x = (column + chunk_position.x) * tile_scale,
+                        .y = (row + chunk_position.y) * tile_scale
                     }),
-                    ecs_value(ImageRect, {
-                        .height = TILE_SIZE,
-                        .width = TILE_SIZE
-                    }),
-                    ecs_value(ImageSize, {
-                        .height = TILE_SIZE * scale,
-                        .width = TILE_SIZE * scale
-                    }),
+                    tile_rect,
+                    tile_image_size,
                     ecs_value(ImageOffset, {
                         .x = source_x,
                         .y = source_y
                     })
                 )
             });
-            ecs_set_image(world, selected_tileset.image, tile_entity);
         }
     }
 }
 
-#define CHUNK_DEBUG
+// #define DEBUG_CHUNK
 
 static void spawn_layer(
 
@@ -85,6 +89,8 @@ static void spawn_layer(
     float scale
 ) {
     char entity_name[20];
+    float chunk_scale = TILE_SIZE * scale;
+
     for (int chunk_index = 0; chunk_index < layer->chunk_count; chunk_index++) {
         TiledChunk *current_chunk = &layer->chunks[chunk_index];
         sprintf(entity_name, "Chunk(%d)", chunk_index);
@@ -95,19 +101,23 @@ static void spawn_layer(
         };
 
         Position chunk_world_position = {
-            .x = chunk_position_tiles.x * TILE_SIZE * scale,
-            .y = chunk_position_tiles.y * TILE_SIZE * scale
+            .x = chunk_position_tiles.x * chunk_scale,
+            .y = chunk_position_tiles.y * chunk_scale
         };
 
         ecs_entity_t chunk_entity = ecs_entity(world, {
             .name = entity_name,
             .parent = layer_entity,
+            .add = ecs_ids(EcsTiledChunk),
             .set = ecs_values(
-                ecs_value_ptr(EcsTiledChunk, current_chunk),
-                ecs_value_ptr(Position, &chunk_world_position)
+                ecs_value_ptr(Position, &chunk_world_position),
+                ecs_value(RectSize, {
+                    .width = current_chunk->width * chunk_scale,
+                    .height = current_chunk->height * chunk_scale,
+                })
             )
         });
-        #ifdef CHUNK_DEBUG
+        #ifdef DEBUG_CHUNK
         ecs_set(world, chunk_entity, RectangleShape, {10, 10});
         ecs_set(world, chunk_entity, Color, { .r = 1, .g = 0, .b = 0, .a = 1});
         #endif
@@ -123,6 +133,7 @@ void spawn_map(
     float scale
 ) {
     TiledMap *loaded_map = load_tiled_map(map_path);
+
     ecs_entity_t map_entity = ecs_entity(world, {
         .name = map_name,
         .set = ecs_values(
@@ -147,14 +158,17 @@ void spawn_map(
                 ecs_value_ptr(EcsTiledTileset, &loaded_map->tilesets[tileset_index])
             )
         });
-        char *image_source = strdup(loaded_map->tilesets[tileset_index].image);
+        char *original_path = loaded_map->tilesets[tileset_index].image;
+        char image_source[strlen("./assets/WeirdValley/") + strlen(original_path) + 1];
+        strcpy(image_source, "./assets/WeirdValley/");
+        strcat(image_source, original_path);
+
         sg_image sokol_image = load_image(image_source);
         ecs_entity_t image_entity = ecs_entity(world, {
-            .name = strdup(loaded_map->tilesets[tileset_index].name),
+            .name = loaded_map->tilesets[tileset_index].name,
             .add = ecs_ids(EcsPrefab),
             .set = ecs_values(
-                ecs_value(Image, { sokol_image.id }),
-                ecs_value(ImageSource, { .src = image_source })
+                ecs_value(Image, { sokol_image.id })
             )
         });
 
@@ -196,4 +210,6 @@ void spawn_map(
             scale
         );
     }
+
+    free_tiled_map(loaded_map);
 }

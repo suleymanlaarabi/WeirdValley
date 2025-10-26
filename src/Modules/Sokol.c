@@ -21,6 +21,7 @@ ECS_TAG_DECLARE(NoRender);
 ECS_TAG_DECLARE(RenderCtx);
 
 void DrawRectangleShapeSystem(ecs_iter_t *it) {
+    const SokolCamera *camera = ecs_singleton_get(it->world, SokolCamera);
     Position *positions = ecs_field(it, Position, 0);
     RectangleShape *shapes = ecs_field(it, RectangleShape, 1);
     Color *colors = ecs_field(it, Color, 2);
@@ -31,50 +32,30 @@ void DrawRectangleShapeSystem(ecs_iter_t *it) {
         Color color = colors[i];
 
         sgp_set_color(color.r, color.g, color.b, color.a);
-        sgp_draw_filled_rect(pos.x, pos.y, shape.width, shape.height);
+        sgp_draw_filled_rect(pos.x - camera->position.x, pos.y - camera->position.y, shape.width, shape.height);
     }
 }
 
 void DrawImageSystem(ecs_iter_t *it) {
     sgp_set_image(0, *ecs_field(it, Image, 1));
-    sgp_set_color(1, 1, 1, 1);
     sgp_draw_filled_rects_from_pos_size(
-        ecs_field(it, Position, 0),
+        (sgp_vec2 *) ecs_field(it, Position, 0),
         (sgp_vec2 *) ecs_field(it, ImageSize, 2),
         it->count
     );
-    sgp_reset_image(0);
-    sgp_set_color(0.1f, 0.1f, 0.1f, 1.0f);
-    sgp_reset_image(0);
 }
 
 void DrawImageWithAtlas(ecs_iter_t *it) {
+    const SokolCamera *camera = ecs_singleton_get(it->world, SokolCamera);
     const Position *positions = ecs_field(it, Position, 0);
     const Image *images = ecs_field(it, Image, 1);
     const ImageRect *rects = ecs_field(it, ImageRect, 2);
     const ImageOffset *offsets = ecs_field(it, ImageOffset, 3);
     const ImageSize *sizes = ecs_field(it, ImageSize, 4);
 
-    sgp_set_color(1, 1, 1, 1);
     sgp_set_image(0, images[0]);
-    sgp_draw_textured_rects_sep(0, positions, (sgp_vec2 *) sizes, offsets, (sgp_vec2 *) rects, it->count);
-    sgp_reset_image(0);
+    sgp_draw_textured_rects_sep(0, -camera->position.x, -camera->position.y, (sgp_vec2 *) positions, (sgp_vec2 *) sizes, offsets, (sgp_vec2 *) rects, it->count);
 }
-
-void BeginRenderSystem(ecs_iter_t *it) {
-    const SokolCamera *camera = ecs_singleton_get(it->world, SokolCamera);
-
-    int width = sapp_width(), height = sapp_height();
-
-    sgp_begin(width, height);
-    float zoom = camera->zoom;
-    sgp_viewport(0, 0, width, height);
-    sgp_project(0, width * zoom, 0, height * zoom);
-    sgp_set_color(0.1f, 0.1f, 0.1f, 1.0f);
-    sgp_clear();
-    sgp_set_blend_mode(SGP_BLENDMODE_BLEND);
-}
-
 
 void EndRenderSystem(ecs_iter_t *_) {
     sg_pass pass = {.swapchain = sglue_swapchain()};
@@ -102,19 +83,15 @@ void SokolImport(ecs_world_t *world) {
 
     sg_desc sgdesc = {
         .environment = sglue_environment(),
-        .logger.func = slog_func
+        .logger.func = slog_func,
     };
-    ecs_singleton_set(world, EcsRest, {0});
     sg_setup(&sgdesc);
-    sgp_desc sgpdesc = {
-        .max_vertices = 4 * 1024 * 1024,
-        .max_commands = 16384,
-    };
+    sgp_desc sgpdesc = {0};
     sgp_setup(&sgpdesc);
-    ecs_os_has_threading();
+
 
     ecs_singleton_set(world, SokolCamera, {
-        .zoom = 3.0f,
+        .zoom = 1.0f,
         .position = {0, 0}
     });
 
@@ -154,7 +131,6 @@ void SokolImport(ecs_world_t *world) {
         .entity = ecs_id(Image),
         .kind = EcsU32
     });
-    ECS_SYSTEM(world, BeginRenderSystem, EcsPreUpdate, [inout] RenderCtx(RenderCtx));
     ECS_SYSTEM(world, DrawRectangleShapeSystem, EcsOnUpdate,
         [in] transform.Position,
         [in] RectangleShape,

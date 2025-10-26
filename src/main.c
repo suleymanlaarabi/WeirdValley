@@ -4,11 +4,11 @@
 #define SOKOL_METAL
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
-#define SGP_BATCH_OPTIMIZER_DEPTH 12
+#define SGP_BATCH_OPTIMIZER_DEPTH 0
 
+#include "transform.h"
 #include "sokol_flecs.h"
 #include "flecs.h"
-#include "transform.h"
 #include "controller.h"
 #include "sokol_animation.h"
 #include "player.h"
@@ -23,13 +23,19 @@ ecs_world_t *world;
 InputState input_state;
 
 static void frame(void) {
+    sgp_begin(sapp_width(), sapp_height());
+    sgp_set_blend_mode(SGP_BLENDMODE_BLEND);
+
     ecs_progress(world, 0);
 }
 
 static void init(void) {
     world = ecs_init();
+    #ifndef NDEBUG
     ECS_IMPORT(world, FlecsRest);
     ECS_IMPORT(world, FlecsStats);
+    ecs_singleton_set(world, EcsRest, {0});
+    #endif
     ECS_IMPORT(world, Transform);
     ECS_IMPORT(world, Sokol);
     ECS_IMPORT(world, SokolAnimation);

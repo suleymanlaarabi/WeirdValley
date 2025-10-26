@@ -30,7 +30,6 @@ perf: CFLAGS += -Ofast -march=native -mtune=native -flto=thin -fstrict-aliasing 
 
 perf: LDFLAGS += -flto=thin -Wl,-dead_strip
 perf: re
-	@echo "Compilation avec optimisations haute performance terminée."
 
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)

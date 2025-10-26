@@ -41,11 +41,8 @@ typedef struct {
 
 typedef struct {
     int height;
-    int infinite;
     TiledLayer *layers;
     int layer_count;
-    int nextlayerid;
-    int nextobjectid;
     char *renderorder;
     int tileheight;
     TiledTileset *tilesets;
